@@ -1,29 +1,46 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <Header :bombsAmount="bombsAmount" :flags="flags" />
+    <Board @flags="updateFlags" @bombsAmount="updateBombsAmount" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "./components/HelloWorld.vue";
+import Header from "./components/Header.vue";
+import Board from "./components/Board.vue";
 
 @Component({
   components: {
-    HelloWorld
+    Header,
+    Board
   }
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  //data
+  public flags = 0;
+  public bombsAmount = 10;
+
+  //methods
+  updateFlags(flags: number): void {
+    this.flags = flags;
+  }
+
+  updateBombsAmount(bombsAmount: number): void {
+    this.bombsAmount = bombsAmount;
+  }
+}
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+@import url("https://fonts.googleapis.com/css2?family=Righteous&display=swap");
+
+body {
+  background: linear-gradient(160deg, #a6e0d9, #3dac9f);
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 1200px;
+  font-family: "Righteous", cursive;
+  text-transform: uppercase;
 }
 </style>
