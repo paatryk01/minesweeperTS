@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { States } from "../Enums";
 
 @Component
@@ -46,11 +46,11 @@ export default class Board extends Vue {
   fieldSizeMax = 20;
   bombsMin = 5;
   bombsMax = 40;
-  bombsAmount = 10; //sprawdzić czy nie dać propsa
+  bombsAmount = 10; 
   flags = 0;
   isGameOver = false;
   squares: Array<string> = [];
-  cells: Array<any> = []; //sprawdzić co jest w tej tablicy
+  cells: Array<any> = []; //tablica z HTMLDivElement
   classesToDelete: Array<string> = [
     "one",
     "two",
@@ -65,16 +65,22 @@ export default class Board extends Vue {
     "checked"
   ]; //sprawdzić czy nie zrobić z tego enuma
   gameState: string = States.Start;
-  //   topEdge: number = this.topEdge;
-  //   topLeftCorner: number = this.topLeftCorner;
-  //   lastCell: number = this.lastCell;
-  //   downEdge: number = this.downEdge;
-  //   downRightCorner: number = this.downRightCorner;
-  topEdge = this.width - 1;
-  topLeftCorner = this.width;
-  lastCell = this.width * this.width - 1;
-  downEdge = this.width * this.width - this.width;
-  downRightCorner = this.width * this.width - this.width - 1;
+  topEdge:number = this.width - 1;
+  topLeftCorner:number = this.width;
+  lastCell:number = this.width * this.width - 1;
+  downEdge:number = this.width * this.width - this.width;
+  downRightCorner:number = this.width * this.width - this.width - 1;
+
+  //watchers
+
+  @Watch("width")
+  onWidthChange(width: number) {
+    this.topEdge = width - 1;
+    this.topLeftCorner = width;
+    this.lastCell = width * width - 1;
+    this.downEdge = width * width - width;
+    this.downRightCorner = width * width - width - 1;
+  }
 
   //methods
   async prepareNewGame() {
@@ -103,12 +109,6 @@ export default class Board extends Vue {
     const gameArray = emptyArray.concat(bombsArray);
     const shuffledArray = gameArray.sort(() => Math.random() - 0.5);
     this.squares = [...shuffledArray];
-    // this.setEdges();
-    this.topEdge = this.width - 1;
-    this.topLeftCorner = this.width;
-    this.lastCell = this.width * this.width - 1;
-    this.downEdge = this.width * this.width - this.width;
-    this.downRightCorner = this.width * this.width - this.width - 1;
   }
 
   private fillCells(): void {
@@ -134,7 +134,7 @@ export default class Board extends Vue {
       return;
     if (square.classList.contains("bomb")) this.gameOver();
     const total = square.getAttribute("data");
-    // const totalClasses = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
+
     if (total > 0 && total <= this.classesToDelete.length) {
       square.classList.add("checked");
       square.classList.add(this.classesToDelete[total - 1]);
@@ -315,13 +315,6 @@ export default class Board extends Vue {
       this.cells[i].removeAttribute("data");
     }
 
-    this.topEdge = this.width - 1;
-    this.topLeftCorner = this.width;
-    this.lastCell = this.width * this.width - 1;
-    this.downEdge = this.width * this.width - this.width;
-    this.downRightCorner = this.width * this.width - this.width - 1;
-
-    // this.setEdges();
     this.gameState = States.Start;
     this.squares = [];
     this.cells = [];
@@ -330,13 +323,6 @@ export default class Board extends Vue {
     this.$emit("flags", this.flags);
   }
 
-  //   public setEdges(): void {
-  //     this.topEdge = this.width - 1;
-  //     this.topLeftCorner = this.width;
-  //     this.lastCell = this.width * this.width - 1;
-  //     this.downEdge = this.width * this.width - this.width;
-  //     this.downRightCorner = this.width * this.width - this.width - 1;
-  //   }
   created() {
     this.createBoard();
   }
