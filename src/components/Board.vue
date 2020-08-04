@@ -37,7 +37,6 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { States } from "../Enums";
-
 @Component
 export default class Board extends Vue {
   //data
@@ -70,9 +69,7 @@ export default class Board extends Vue {
   lastCell:number = this.width * this.width - 1;
   downEdge:number = this.width * this.width - this.width;
   downRightCorner:number = this.width * this.width - this.width - 1;
-
   //watchers
-
   @Watch("width")
   onWidthChange(width: number) {
     this.topEdge = width - 1;
@@ -81,7 +78,6 @@ export default class Board extends Vue {
     this.downEdge = width * width - width;
     this.downRightCorner = width * width - width - 1;
   }
-
   //methods
   async prepareNewGame() {
     const grid = document.querySelector<HTMLElement>(".grid");
@@ -91,7 +87,6 @@ export default class Board extends Vue {
       alert(`You can't set more bombs than fields.`);
       this.bombsAmount = 10;
     }
-
     if (grid != null) {
       grid.style.width = this.width * 40 + "px";
       await this.clearHelper();
@@ -100,7 +95,6 @@ export default class Board extends Vue {
     }
     return;
   }
-
   private createBoard(): void {
     const bombsArray = Array(this.bombsAmount).fill("bomb");
     const emptyArray = Array(this.width * this.width - this.bombsAmount).fill(
@@ -110,17 +104,14 @@ export default class Board extends Vue {
     const shuffledArray = gameArray.sort(() => Math.random() - 0.5);
     this.squares = [...shuffledArray];
   }
-
   private fillCells(): void {
     const elements = document.getElementsByClassName("square");
     for (let i = 0; i < elements.length; i++) {
       this.cells.push(elements[i]);
     }
-
     // this.cells = [...elements];
     this.addNumbers();
   }
-
   public clicked(square: any) {
     if (square === undefined) {
       square = event!.target;
@@ -134,7 +125,6 @@ export default class Board extends Vue {
       return;
     if (square.classList.contains("bomb")) this.gameOver();
     const total = square.getAttribute("data");
-
     if (total > 0 && total <= this.classesToDelete.length) {
       square.classList.add("checked");
       square.classList.add(this.classesToDelete[total - 1]);
@@ -147,14 +137,11 @@ export default class Board extends Vue {
     if (!square.classList.contains("bomb")) {
       this.gameState = States.NiceTry;
     }
-
     this.checkSquare(currentId);
     square.classList.add("checked");
   }
-
   private addFlag() {
     const square = event!.target as HTMLTextAreaElement;
-
     if (this.isGameOver) return;
     if (
       !square.classList.contains("checked") &&
@@ -173,13 +160,11 @@ export default class Board extends Vue {
     }
     this.$emit("flags", this.flags);
   }
-
   private addNumbers(): void {
     for (let i = 0; i < this.cells.length; i++) {
       let total = 0;
       const isLeftEdge = i % this.width === 0;
       const isRightEdge = i % this.width === this.width - 1;
-
       if (this.cells[i].classList.contains("empty")) {
         if (
           i > 0 &&
@@ -231,7 +216,6 @@ export default class Board extends Vue {
       }
     }
   }
-
   public checkSquare(currentId: any) {
     const isLeftEdge = currentId % this.width === 0;
     const isRightEdge = currentId % this.width === this.width - 1;
@@ -278,7 +262,6 @@ export default class Board extends Vue {
       }
     }, 10);
   }
-
   public gameOver(): void {
     this.isGameOver = true;
     this.gameState = States.Lost;
@@ -289,7 +272,6 @@ export default class Board extends Vue {
       }
     });
   }
-
   public checkForWin(): void {
     let matches = 0;
     for (let i = 0; i < this.cells.length; i++) {
@@ -306,7 +288,6 @@ export default class Board extends Vue {
       alert("Congratulations, you are a winner! 🏆");
     }
   }
-
   public clearHelper(): void {
     for (let i = 0; i < this.cells.length; i++) {
       this.cells[i].classList.remove(...this.classesToDelete);
@@ -314,7 +295,6 @@ export default class Board extends Vue {
       this.cells[i].removeAttribute("style");
       this.cells[i].removeAttribute("data");
     }
-
     this.gameState = States.Start;
     this.squares = [];
     this.cells = [];
@@ -322,7 +302,6 @@ export default class Board extends Vue {
     this.isGameOver = false;
     this.$emit("flags", this.flags);
   }
-
   created() {
     this.createBoard();
   }

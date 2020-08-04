@@ -7,7 +7,6 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-
 @Component
 export default class Header extends Vue {
   @Prop() readonly flags: number;
@@ -19,7 +18,6 @@ export default class Header extends Vue {
 h1 {
   font-size: 40px;
 }
-
 h1,
 h3 {
   text-align: center;
