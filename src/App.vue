@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Header :bombsAmount="bombsAmount" :flags="flags" />
-    <Board @flags="updateFlags" @bombsAmount="updateBombsAmount" />
+    <Header/>
+    <Board/>
   </div>
 </template>
 
@@ -17,16 +17,7 @@ import Board from "./components/Board.vue";
   }
 })
 export default class App extends Vue {
-  //data
-  public flags = 0;
-  public bombsAmount = 10;
-  //methods
-  updateFlags(flags: number): void {
-    this.flags = flags;
-  }
-  updateBombsAmount(bombsAmount: number): void {
-    this.bombsAmount = bombsAmount;
-  }
+  
 }
 </script>
 

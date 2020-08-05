@@ -15,7 +15,7 @@
         class="input-number"
         :min="bombsMin"
         :max="bombsMax"
-        v-model.number="bombsAmount"
+        v-model.number="bombsA"
       />
       <button class="startButton">New game</button>
     </form>
@@ -37,15 +37,28 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { States } from "../Enums";
+import { namespace, Mutation } from 'vuex-class'
+const bombs = namespace('bombs')
+
 @Component
 export default class Board extends Vue {
+
+  get bombsA() {
+    return this.bombsA;
+  }
+
+  @bombs.Action
+  public updateBombs!: (bombsAmount: number) => void
+
+  @bombs.State
+  public bombsAmount!: number;
+
   //data
   width = 10;
   fieldSizeMin = 5;
   fieldSizeMax = 20;
   bombsMin = 5;
   bombsMax = 40;
-  bombsAmount = 10; 
   flags = 0;
   isGameOver = false;
   squares: Array<string> = [];

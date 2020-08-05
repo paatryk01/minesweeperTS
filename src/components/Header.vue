@@ -6,11 +6,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
+import { namespace } from 'vuex-class'
+const bombs = namespace('bombs')
+
 @Component
 export default class Header extends Vue {
-  @Prop() readonly flags: number;
-  @Prop({ default: 10 }) readonly bombsAmount: number;
+  @bombs.State
+  public bombsAmount!: number;
 }
 </script>
 
