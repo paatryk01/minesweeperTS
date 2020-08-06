@@ -7,10 +7,15 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
+import store  from "../store"
 @Component
 export default class Header extends Vue {
-  @Prop() readonly flags: number;
   @Prop({ default: 10 }) readonly bombsAmount: number;
+
+  get flags(): number {
+    const flags = this.$store.state.flags;
+    return flags;
+  }
 }
 </script>
 

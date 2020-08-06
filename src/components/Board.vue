@@ -37,6 +37,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { States } from "../Enums";
+import store  from "../store"
 @Component
 export default class Board extends Vue {
   //data
@@ -46,7 +47,7 @@ export default class Board extends Vue {
   bombsMin = 5;
   bombsMax = 40;
   bombsAmount = 10; 
-  flags = 0;
+  // flags = 0;
   isGameOver = false;
   squares: Array<string> = [];
   cells: Array<any> = []; //tablica z HTMLDivElement
@@ -69,6 +70,16 @@ export default class Board extends Vue {
   lastCell:number = this.width * this.width - 1;
   downEdge:number = this.width * this.width - this.width;
   downRightCorner:number = this.width * this.width - this.width - 1;
+
+  get flags(): number {
+    const flags = this.$store.state.flags;
+    return flags;
+  }
+
+  updateFlags() {
+    this.$store.dispatch('updateFlags', this.flags);
+  }
+
   //watchers
   @Watch("width")
   onWidthChange(width: number) {
@@ -150,12 +161,12 @@ export default class Board extends Vue {
       if (!square.classList.contains("flag")) {
         square.classList.add("flag");
         square.innerHTML = "🚩";
-        this.flags++;
+        this.$store.dispatch('updateFlags', this.flags + 1);
         this.checkForWin();
       } else {
         square.classList.remove("flag");
         square.innerHTML = "";
-        this.flags--;
+        this.$store.dispatch('updateFlags', this.flags - 1);
       }
     }
     this.$emit("flags", this.flags);
@@ -298,9 +309,8 @@ export default class Board extends Vue {
     this.gameState = States.Start;
     this.squares = [];
     this.cells = [];
-    this.flags = 0;
     this.isGameOver = false;
-    this.$emit("flags", this.flags);
+    this.$store.dispatch('updateFlags', 0);
   }
   created() {
     this.createBoard();
