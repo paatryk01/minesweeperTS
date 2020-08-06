@@ -18,10 +18,10 @@ import Board from "./components/Board.vue";
 })
 export default class App extends Vue {
   //data
-  
+
   public bombsAmount = 10;
   //methods
-  
+
   updateBombsAmount(bombsAmount: number): void {
     this.bombsAmount = bombsAmount;
   }

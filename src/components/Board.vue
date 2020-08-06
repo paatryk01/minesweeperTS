@@ -37,7 +37,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { States } from "../Enums";
-import store  from "../store"
+import store from "../store";
 @Component
 export default class Board extends Vue {
   //data
@@ -46,7 +46,7 @@ export default class Board extends Vue {
   fieldSizeMax = 20;
   bombsMin = 5;
   bombsMax = 40;
-  bombsAmount = 10; 
+  bombsAmount = 10;
   // flags = 0;
   isGameOver = false;
   squares: Array<string> = [];
@@ -65,11 +65,11 @@ export default class Board extends Vue {
     "checked"
   ]; //sprawdzić czy nie zrobić z tego enuma
   gameState: string = States.Start;
-  topEdge:number = this.width - 1;
-  topLeftCorner:number = this.width;
-  lastCell:number = this.width * this.width - 1;
-  downEdge:number = this.width * this.width - this.width;
-  downRightCorner:number = this.width * this.width - this.width - 1;
+  topEdge: number = this.width - 1;
+  topLeftCorner: number = this.width;
+  lastCell: number = this.width * this.width - 1;
+  downEdge: number = this.width * this.width - this.width;
+  downRightCorner: number = this.width * this.width - this.width - 1;
 
   get flags(): number {
     const flags = this.$store.state.flags;
@@ -77,7 +77,7 @@ export default class Board extends Vue {
   }
 
   updateFlags() {
-    this.$store.dispatch('updateFlags', this.flags);
+    this.$store.dispatch("updateFlags", this.flags);
   }
 
   //watchers
@@ -161,12 +161,12 @@ export default class Board extends Vue {
       if (!square.classList.contains("flag")) {
         square.classList.add("flag");
         square.innerHTML = "🚩";
-        this.$store.dispatch('updateFlags', this.flags + 1);
+        this.$store.dispatch("updateFlags", this.flags + 1);
         this.checkForWin();
       } else {
         square.classList.remove("flag");
         square.innerHTML = "";
-        this.$store.dispatch('updateFlags', this.flags - 1);
+        this.$store.dispatch("updateFlags", this.flags - 1);
       }
     }
     this.$emit("flags", this.flags);
@@ -310,7 +310,7 @@ export default class Board extends Vue {
     this.squares = [];
     this.cells = [];
     this.isGameOver = false;
-    this.$store.dispatch('updateFlags', 0);
+    this.$store.dispatch("updateFlags", 0);
   }
   created() {
     this.createBoard();
