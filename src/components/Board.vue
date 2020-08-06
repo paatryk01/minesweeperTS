@@ -16,6 +16,7 @@
         :min="bombsMin"
         :max="bombsMax"
         v-model.number="bombsAmount"
+        @input="updateBombs"
       />
       <button class="startButton">New game</button>
     </form>
@@ -37,6 +38,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { States } from "../Enums";
+import { computed } from "mobx";
 import store from "../store";
 @Component
 export default class Board extends Vue {
@@ -46,8 +48,6 @@ export default class Board extends Vue {
   fieldSizeMax = 20;
   bombsMin = 5;
   bombsMax = 40;
-  bombsAmount = 10;
-  // flags = 0;
   isGameOver = false;
   squares: Array<string> = [];
   cells: Array<any> = []; //tablica z HTMLDivElement
@@ -71,12 +71,16 @@ export default class Board extends Vue {
   downEdge: number = this.width * this.width - this.width;
   downRightCorner: number = this.width * this.width - this.width - 1;
 
+  public updateBombs(e): void {
+    this.$store.commit("updateBombs", parseInt(e.target.value));
+  }
+
   get flags(): number {
     const flags = this.$store.state.flags;
     return flags;
   }
 
-  updateFlags() {
+  updateFlags(): void {
     this.$store.dispatch("updateFlags", this.flags);
   }
 
@@ -92,11 +96,11 @@ export default class Board extends Vue {
   //methods
   async prepareNewGame() {
     const grid = document.querySelector<HTMLElement>(".grid");
-    if (this.bombsAmount < this.width * this.width) {
-      this.$emit("bombsAmount", this.bombsAmount);
+    if (this.$store.state.bombsAmount < this.width * this.width) {
+      this.$emit("bombsAmount", this.$store.state.bombsAmount);
     } else {
       alert(`You can't set more bombs than fields.`);
-      this.bombsAmount = 10;
+      this.$store.dispatch("updateBombs", 10);
     }
     if (grid != null) {
       grid.style.width = this.width * 40 + "px";
@@ -107,10 +111,10 @@ export default class Board extends Vue {
     return;
   }
   private createBoard(): void {
-    const bombsArray = Array(this.bombsAmount).fill("bomb");
-    const emptyArray = Array(this.width * this.width - this.bombsAmount).fill(
-      "empty"
-    );
+    const bombsArray = Array(this.$store.state.bombsAmount).fill("bomb");
+    const emptyArray = Array(
+      this.width * this.width - this.$store.state.bombsAmount
+    ).fill("empty");
     const gameArray = emptyArray.concat(bombsArray);
     const shuffledArray = gameArray.sort(() => Math.random() - 0.5);
     this.squares = [...shuffledArray];
@@ -156,7 +160,7 @@ export default class Board extends Vue {
     if (this.isGameOver) return;
     if (
       !square.classList.contains("checked") &&
-      this.flags <= this.bombsAmount
+      this.flags <= this.$store.state.bombsAmount
     ) {
       if (!square.classList.contains("flag")) {
         square.classList.add("flag");
@@ -293,7 +297,7 @@ export default class Board extends Vue {
         matches++;
       }
     }
-    if (matches === this.bombsAmount) {
+    if (matches === this.$store.state.bombsAmount) {
       this.isGameOver = true;
       this.gameState = States.Won;
       alert("Congratulations, you are a winner! 🏆");

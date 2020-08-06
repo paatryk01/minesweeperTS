@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Header :bombsAmount="bombsAmount" />
-    <Board @bombsAmount="updateBombsAmount" />
+    <Header />
+    <Board />
   </div>
 </template>
 
@@ -16,16 +16,7 @@ import Board from "./components/Board.vue";
     Board
   }
 })
-export default class App extends Vue {
-  //data
-
-  public bombsAmount = 10;
-  //methods
-
-  updateBombsAmount(bombsAmount: number): void {
-    this.bombsAmount = bombsAmount;
-  }
-}
+export default class App extends Vue {}
 </script>
 
 <style>
