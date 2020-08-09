@@ -1,6 +1,6 @@
 <template>
   <div class="timer-group">
-    <h3>Time:</h3>
+    <p>Time:</p>
     <div id="timer">{{ this.timeElapsed.toFixed(1) }}</div>
   </div>
 </template>
@@ -24,10 +24,10 @@ export default class Timer extends Vue {
 .timer-group {
   display: flex;
   justify-content: center;
-  font-size: 16px;
 }
-
-.timer-group h3 {
+.timer-group p {
   margin: 0 15px;
+  font-size: 16px;
+  font-weight: 600;
 }
 </style>

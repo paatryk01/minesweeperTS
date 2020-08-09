@@ -1,7 +1,7 @@
 <template>
   <div>
     <form class="options" @submit.prevent="prepareNewGame">
-      <p>Size</p>
+      <p>Size:</p>
       <input
         type="number"
         class="input-number"
@@ -9,7 +9,7 @@
         :max="fieldSizeMax"
         v-model.number="width"
       />
-      <p>Bombs Amount</p>
+      <p>Bombs Amount:</p>
       <input
         type="number"
         class="input-number"
@@ -366,7 +366,6 @@ export default class Board extends Mixins(TimerMixin) {
   text-align: center;
 }
 .bomb {
-  /* background-color: red; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -392,14 +391,19 @@ export default class Board extends Mixins(TimerMixin) {
   background-color: transparent;
   color: #000;
   border: 2px solid #000;
-  padding: 6px 12px;
+  padding: 4px 12px;
+  border-radius: 8px 0px 8px 0px;
+  transition: border-radius 1s;
 }
 .startButton:hover {
   cursor: pointer;
-  transition: 1s;
+  transition: 2s;
   background-color: #000;
   color: #fff;
   border-radius: 0px 8px 0px 8px;
+}
+.startButton:focus {
+  outline: none;
 }
 .one {
   color: #0000ff;
@@ -433,7 +437,9 @@ export default class Board extends Mixins(TimerMixin) {
   font-size: 16px;
   text-align: center;
 }
-
+.options input:focus {
+  outline: none;
+}
 .input-number::placeholder {
   color: #000;
 }
