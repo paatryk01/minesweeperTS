@@ -6,7 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     flags: 0,
-    bombsAmount: 10
+    bombsAmount: 10,
+    timeElapsed: 0
   },
   mutations: {
     updateFlags(state, payload) {
@@ -14,6 +15,9 @@ export default new Vuex.Store({
     },
     updateBombs(state, payload) {
       state.bombsAmount = payload;
+    },
+    updateTime(state, payload) {
+      state.timeElapsed = payload;
     }
   },
   actions: {
@@ -22,6 +26,9 @@ export default new Vuex.Store({
     },
     updateBombs(context, payload) {
       context.commit("updateBombs", payload);
+    },
+    updateTime(context, payload) {
+      context.commit("updateTime", payload);
     }
   }
 });

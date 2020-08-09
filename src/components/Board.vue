@@ -15,7 +15,7 @@
         class="input-number"
         :min="bombsMin"
         :max="bombsMax"
-        v-model.number="bombsAmount"
+        :placeholder="10"
         @input="updateBombs"
       />
       <button class="startButton">New game</button>
@@ -36,12 +36,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Watch, Mixins } from "vue-property-decorator";
 import { States } from "../Enums";
-import { computed } from "mobx";
 import store from "../store";
+import TimerMixin from "../Mixins";
+
 @Component
-export default class Board extends Vue {
+export default class Board extends Mixins(TimerMixin) {
   //data
   width = 10;
   fieldSizeMin = 5;
@@ -49,8 +50,15 @@ export default class Board extends Vue {
   bombsMin = 5;
   bombsMax = 40;
   isGameOver = false;
+  timerEnabled = true;
   squares: Array<string> = [];
-  cells: Array<any> = []; //tablica z HTMLDivElement
+  cells: Array<any> = []; // HTMLDivElements array
+  gameState: string = States.Start;
+  topEdge: number = this.width - 1;
+  topLeftCorner: number = this.width;
+  lastCell: number = this.width * this.width - 1;
+  downEdge: number = this.width * this.width - this.width;
+  downRightCorner: number = this.width * this.width - this.width - 1;
   classesToDelete: Array<string> = [
     "one",
     "two",
@@ -63,23 +71,16 @@ export default class Board extends Vue {
     "bomb",
     "flag",
     "checked"
-  ]; //sprawdzić czy nie zrobić z tego enuma
-  gameState: string = States.Start;
-  topEdge: number = this.width - 1;
-  topLeftCorner: number = this.width;
-  lastCell: number = this.width * this.width - 1;
-  downEdge: number = this.width * this.width - this.width;
-  downRightCorner: number = this.width * this.width - this.width - 1;
+  ];
 
+  //store
   public updateBombs(e): void {
     this.$store.commit("updateBombs", parseInt(e.target.value));
   }
-
   get flags(): number {
     const flags = this.$store.state.flags;
     return flags;
   }
-
   updateFlags(): void {
     this.$store.dispatch("updateFlags", this.flags);
   }
@@ -93,11 +94,12 @@ export default class Board extends Vue {
     this.downEdge = width * width - width;
     this.downRightCorner = width * width - width - 1;
   }
+
   //methods
-  async prepareNewGame() {
+  private async prepareNewGame() {
     const grid = document.querySelector<HTMLElement>(".grid");
     if (this.$store.state.bombsAmount < this.width * this.width) {
-      this.$emit("bombsAmount", this.$store.state.bombsAmount);
+      this.$store.dispatch("updateBombs", this.$store.state.bombsAmount);
     } else {
       alert(`You can't set more bombs than fields.`);
       this.$store.dispatch("updateBombs", 10);
@@ -107,6 +109,9 @@ export default class Board extends Vue {
       await this.clearHelper();
       await this.createBoard();
       await this.fillCells();
+      this.stopTimer();
+      this.resetTimer();
+      this.timerEnabled = true;
     }
     return;
   }
@@ -124,10 +129,14 @@ export default class Board extends Vue {
     for (let i = 0; i < elements.length; i++) {
       this.cells.push(elements[i]);
     }
-    // this.cells = [...elements];
     this.addNumbers();
   }
-  public clicked(square: any) {
+  public clicked(square) {
+    if (this.timerEnabled == true) {
+      this.resetTimer();
+      this.startTimer();
+      this.timerEnabled = false;
+    }
     if (square === undefined) {
       square = event!.target;
     }
@@ -155,12 +164,12 @@ export default class Board extends Vue {
     this.checkSquare(currentId);
     square.classList.add("checked");
   }
-  private addFlag() {
+  private addFlag(): void {
     const square = event!.target as HTMLTextAreaElement;
     if (this.isGameOver) return;
     if (
       !square.classList.contains("checked") &&
-      this.flags <= this.$store.state.bombsAmount
+      this.$store.state.flags <= this.$store.state.bombsAmount
     ) {
       if (!square.classList.contains("flag")) {
         square.classList.add("flag");
@@ -173,7 +182,6 @@ export default class Board extends Vue {
         this.$store.dispatch("updateFlags", this.flags - 1);
       }
     }
-    this.$emit("flags", this.flags);
   }
   private addNumbers(): void {
     for (let i = 0; i < this.cells.length; i++) {
@@ -231,7 +239,7 @@ export default class Board extends Vue {
       }
     }
   }
-  public checkSquare(currentId: any) {
+  public checkSquare(currentId) {
     const isLeftEdge = currentId % this.width === 0;
     const isRightEdge = currentId % this.width === this.width - 1;
     setTimeout(() => {
@@ -286,6 +294,7 @@ export default class Board extends Vue {
         square.style = "background-color: #ff0000";
       }
     });
+    this.stopTimer();
   }
   public checkForWin(): void {
     let matches = 0;
@@ -300,7 +309,9 @@ export default class Board extends Vue {
     if (matches === this.$store.state.bombsAmount) {
       this.isGameOver = true;
       this.gameState = States.Won;
-      alert("Congratulations, you are a winner! 🏆");
+      this.stopTimer();
+      alert(`Congratulations, you are a winner! 🏆 
+      You did it in ${this.$store.state.timeElapsed.toFixed(1)} seconds`);
     }
   }
   public clearHelper(): void {
@@ -316,6 +327,8 @@ export default class Board extends Vue {
     this.isGameOver = false;
     this.$store.dispatch("updateFlags", 0);
   }
+
+  //life cycle
   created() {
     this.createBoard();
   }
@@ -334,7 +347,7 @@ export default class Board extends Vue {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: 240px;
+  top: 320px;
   margin: 30px 0px 150px;
 }
 .square {
@@ -419,5 +432,9 @@ export default class Board extends Vue {
   font-family: "Righteous";
   font-size: 16px;
   text-align: center;
+}
+
+.input-number::placeholder {
+  color: #000;
 }
 </style>
