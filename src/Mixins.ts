@@ -5,7 +5,7 @@ class TimerMixin extends Vue {
   timer: number;
 
   get timeElapsed(): number {
-    const timeElapsed = this.$store.state.timeElapsed;
+    const { timeElapsed } = this.$store.state;
     return timeElapsed;
   }
 

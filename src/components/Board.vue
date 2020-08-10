@@ -37,28 +37,43 @@
 
 <script lang="ts">
 import { Component, Watch, Mixins } from "vue-property-decorator";
-import { States } from "../Enums";
-import store from "../store";
+import States from "../Enums";
 import TimerMixin from "../Mixins";
+import store from "../store";
 
 @Component
 export default class Board extends Mixins(TimerMixin) {
-  //data
+  // data
   width = 10;
+
   fieldSizeMin = 5;
+
   fieldSizeMax = 20;
+
   bombsMin = 5;
+
   bombsMax = 40;
+
   isGameOver = false;
+
   timerEnabled = true;
+
   squares: Array<string> = [];
+
   cells: Array<any> = []; // HTMLDivElements array
+
   gameState: string = States.Start;
+
   topEdge: number = this.width - 1;
+
   topLeftCorner: number = this.width;
+
   lastCell: number = this.width * this.width - 1;
+
   downEdge: number = this.width * this.width - this.width;
+
   downRightCorner: number = this.width * this.width - this.width - 1;
+
   classesToDelete: Array<string> = [
     "one",
     "two",
@@ -73,19 +88,21 @@ export default class Board extends Mixins(TimerMixin) {
     "checked"
   ];
 
-  //store
+  // store
   public updateBombs(e): void {
     this.$store.commit("updateBombs", parseInt(e.target.value));
   }
+
   get flags(): number {
-    const flags = this.$store.state.flags;
+    const { flags } = this.$store.state;
     return flags;
   }
+
   updateFlags(): void {
     this.$store.dispatch("updateFlags", this.flags);
   }
 
-  //watchers
+  // watchers
   @Watch("width")
   onWidthChange(width: number) {
     this.topEdge = width - 1;
@@ -95,7 +112,7 @@ export default class Board extends Mixins(TimerMixin) {
     this.downRightCorner = width * width - width - 1;
   }
 
-  //methods
+  // methods
   private async prepareNewGame() {
     const grid = document.querySelector<HTMLElement>(".grid");
     if (this.$store.state.bombsAmount < this.width * this.width) {
@@ -105,7 +122,7 @@ export default class Board extends Mixins(TimerMixin) {
       this.$store.dispatch("updateBombs", 10);
     }
     if (grid != null) {
-      grid.style.width = this.width * 40 + "px";
+      grid.style.width = `${this.width * 40}px`;
       await this.clearHelper();
       await this.createBoard();
       await this.fillCells();
@@ -113,8 +130,8 @@ export default class Board extends Mixins(TimerMixin) {
       this.resetTimer();
       this.timerEnabled = true;
     }
-    return;
   }
+
   private createBoard(): void {
     const bombsArray = Array(this.$store.state.bombsAmount).fill("bomb");
     const emptyArray = Array(
@@ -124,6 +141,7 @@ export default class Board extends Mixins(TimerMixin) {
     const shuffledArray = gameArray.sort(() => Math.random() - 0.5);
     this.squares = [...shuffledArray];
   }
+
   private fillCells(): void {
     const elements = document.getElementsByClassName("square");
     for (let i = 0; i < elements.length; i++) {
@@ -131,14 +149,15 @@ export default class Board extends Mixins(TimerMixin) {
     }
     this.addNumbers();
   }
+
   public clicked(square) {
-    if (this.timerEnabled == true) {
+    if (this.timerEnabled === true) {
       this.resetTimer();
       this.startTimer();
       this.timerEnabled = false;
     }
     if (square === undefined) {
-      square = event!.target;
+      square = window.event!.target;
     }
     const currentId = square.id;
     if (this.isGameOver) return;
@@ -164,8 +183,9 @@ export default class Board extends Mixins(TimerMixin) {
     this.checkSquare(currentId);
     square.classList.add("checked");
   }
+
   private addFlag(): void {
-    const square = event!.target as HTMLTextAreaElement;
+    const square = window.event!.target as HTMLTextAreaElement;
     if (this.isGameOver) return;
     if (
       !square.classList.contains("checked") &&
@@ -183,6 +203,7 @@ export default class Board extends Mixins(TimerMixin) {
       }
     }
   }
+
   private addNumbers(): void {
     for (let i = 0; i < this.cells.length; i++) {
       let total = 0;
@@ -239,6 +260,7 @@ export default class Board extends Mixins(TimerMixin) {
       }
     }
   }
+
   public checkSquare(currentId) {
     const isLeftEdge = currentId % this.width === 0;
     const isRightEdge = currentId % this.width === this.width - 1;
@@ -285,6 +307,7 @@ export default class Board extends Mixins(TimerMixin) {
       }
     }, 10);
   }
+
   public gameOver(): void {
     this.isGameOver = true;
     this.gameState = States.Lost;
@@ -296,6 +319,7 @@ export default class Board extends Mixins(TimerMixin) {
     });
     this.stopTimer();
   }
+
   public checkForWin(): void {
     let matches = 0;
     for (let i = 0; i < this.cells.length; i++) {
@@ -314,6 +338,7 @@ export default class Board extends Mixins(TimerMixin) {
       You did it in ${this.$store.state.timeElapsed.toFixed(1)} seconds`);
     }
   }
+
   public clearHelper(): void {
     for (let i = 0; i < this.cells.length; i++) {
       this.cells[i].classList.remove(...this.classesToDelete);
@@ -328,10 +353,11 @@ export default class Board extends Mixins(TimerMixin) {
     this.$store.dispatch("updateFlags", 0);
   }
 
-  //life cycle
+  // life cycle
   created() {
     this.createBoard();
   }
+
   mounted() {
     this.fillCells();
   }
@@ -347,7 +373,7 @@ export default class Board extends Mixins(TimerMixin) {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: 320px;
+  top: 300px;
   margin: 30px 0px 150px;
 }
 .square {

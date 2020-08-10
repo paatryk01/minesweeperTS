@@ -7,14 +7,13 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import store from "../store";
 
 @Component
 export default class Timer extends Vue {
   timer: number;
 
   get timeElapsed(): number {
-    const timeElapsed = this.$store.state.timeElapsed;
+    const { timeElapsed } = this.$store.state;
     return timeElapsed;
   }
 }

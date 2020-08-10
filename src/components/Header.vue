@@ -7,17 +7,16 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import store from "../store";
 
 @Component
 export default class Header extends Vue {
   get bombsAmount(): number {
-    const bombsAmount = this.$store.state.bombsAmount;
+    const { bombsAmount } = this.$store.state;
     return bombsAmount;
   }
 
   get flags(): number {
-    const flags = this.$store.state.flags;
+    const { flags } = this.$store.state;
     return flags;
   }
 }
