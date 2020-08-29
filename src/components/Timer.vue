@@ -12,6 +12,8 @@ import { Component, Vue } from "vue-property-decorator";
 export default class Timer extends Vue {
   timer: number;
 
+  $store: any;
+
   get timeElapsed(): number {
     const { timeElapsed } = this.$store.state;
     return timeElapsed;
@@ -19,14 +21,6 @@ export default class Timer extends Vue {
 }
 </script>
 
-<style scoped>
-.timer-group {
-  display: flex;
-  justify-content: center;
-}
-.timer-group p {
-  margin: 0 15px;
-  font-size: 16px;
-  font-weight: 600;
-}
+<style lang="scss">
+@import "/src/styles/timer.scss";
 </style>

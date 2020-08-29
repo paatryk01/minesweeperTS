@@ -12,7 +12,7 @@ module.exports = {
   rules: {
     "no-plusplus": "off",
     "no-param-reassign": 0,
-    "radix": "off",
+    radix: "off",
     "no-unused-vars": "off",
     "no-alert": "off"
   },

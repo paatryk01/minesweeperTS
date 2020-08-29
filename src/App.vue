@@ -22,14 +22,6 @@ import Timer from "./components/Timer.vue";
 export default class App extends Vue {}
 </script>
 
-<style>
-@import url("https://fonts.googleapis.com/css2?family=Righteous&display=swap");
-body {
-  background: linear-gradient(160deg, #a6e0d9, #3dac9f);
-  background-repeat: no-repeat;
-  background-size: contain;
-  height: 1200px;
-  font-family: "Righteous", cursive;
-  text-transform: uppercase;
-}
+<style lang="scss">
+@import "/src/styles/global.scss";
 </style>

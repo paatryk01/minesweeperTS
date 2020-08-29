@@ -10,6 +10,8 @@ import { Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class Header extends Vue {
+  $store: any;
+
   get bombsAmount(): number {
     const { bombsAmount } = this.$store.state;
     return bombsAmount;
@@ -21,13 +23,6 @@ export default class Header extends Vue {
   }
 }
 </script>
-
-<style scoped>
-h1 {
-  font-size: 40px;
-}
-h1,
-h3 {
-  text-align: center;
-}
+<style lang="scss">
+@import "/src/styles/header.scss";
 </style>
