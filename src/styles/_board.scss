@@ -1,3 +1,5 @@
+@use 'variables';
+
 .grid {
   width: 400px;
   display: flex;
@@ -11,8 +13,8 @@
 }
 
 .square {
-  height: 40px;
-  width: 40px;
+  height: variables.$square-size;
+  width: variables.$square-size;
   box-sizing: border-box;
   border: 2px solid;
   border-color: #eee #999 #999 #eee;
@@ -55,8 +57,8 @@
   font-family: "Righteous";
   text-transform: uppercase;
   background-color: transparent;
-  color: #000;
-  border: 2px solid #000;
+  color: variables.$main-color;
+  border: 2px solid variables.$main-color;
   padding: 4px 12px;
   border-radius: 8px 0px 8px 0px;
   transition: border-radius 1s;
@@ -64,7 +66,7 @@
   &:hover {
     cursor: pointer;
     transition: 2s;
-    background-color: #000;
+    background-color: variables.$main-color;
     color: #fff;
     border-radius: 0px 8px 0px 8px;
   }
@@ -106,7 +108,7 @@
     margin: 0 15px;
     background: transparent;
     border: 0px;
-    border-bottom: 2px solid #000;
+    border-bottom: 2px solid variables.$main-color;
     font-family: "Righteous";
     font-size: 16px;
     text-align: center;
@@ -118,5 +120,5 @@
 }
 
 .input-number::placeholder {
-  color: #000;
+  color: variables.$main-color;
 }

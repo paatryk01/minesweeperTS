@@ -44,23 +44,23 @@ import store from "../store";
 @Component
 export default class Board extends Mixins(TimerMixin) {
   // data
-  width = 10;
+  width: number = 10;
 
-  fieldSizeMin = 5;
+  fieldSizeMin: number = 5;
 
-  fieldSizeMax = 20;
+  fieldSizeMax: number = 20;
 
-  bombsMin = 5;
+  bombsMin: number = 5;
 
-  bombsMax = 40;
+  bombsMax: number = 40;
 
-  isGameOver = false;
+  isGameOver: boolean = false;
 
-  timerEnabled = true;
+  timerEnabled: boolean = true;
 
   squares: Array<string> = [];
 
-  cells: Array<any> = []; // HTMLDivElements array
+  cells: Array<any> = [];
 
   gameState: string = States.Start;
 
@@ -150,6 +150,7 @@ export default class Board extends Mixins(TimerMixin) {
       this.cells.push(elements[i]);
     }
     this.addNumbers();
+    console.log(this.cells);
   }
 
   public clicked(square) {
